@@ -1,0 +1,11 @@
+.task {
+  width: 150px;
+  height: 100px;
+  background-color: blueviolet;
+}
+
+.task p {
+  font-size: 20px;
+  padding: 30px;
+  color: white;
+}

@@ -1,0 +1,9 @@
+.addTask input {
+  width: 80%;
+  height: 30px;
+}
+.addTask button {
+  width: 15%;
+  height: 36px;
+  margin-left: 10px;
+}
