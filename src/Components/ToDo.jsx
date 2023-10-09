@@ -1,10 +1,16 @@
 import React from "react";
 import AddTask from "./AddTask/AddTask";
 import Task from "./Task/Task";
+import Styles from "./styles.module.css";
+import { idGeneretor } from "../helpers/idGeneretor";
 
 class ToDo extends React.Component {
   state = {
-    tasks: [{ name: "Task1" }, { name: "Task2" }, { name: "Task3" }],
+    tasks: [
+      { name: "Task1", id: idGeneretor() },
+      { name: "Task2", id: idGeneretor() },
+      { name: "Task3", id: idGeneretor() },
+    ],
     inputValue: "",
   };
 
@@ -16,22 +22,43 @@ class ToDo extends React.Component {
   };
 
   submit = () => {
+    if (this.state.inputValue === "") return;
     const tasks = this.state.tasks;
-    tasks.push({ name: this.state.inputValue });
+    tasks.push({ name: this.state.inputValue, id: idGeneretor() });
     // this.state.tasks = tasks;  sxal tarberak
     this.setState({
+      ...this.state,
+      inputValue: "",
+      tasks,
+    });
+  };
+
+  handleDeleteTask = (id) => {
+    let tasks = this.state.tasks;
+    tasks = tasks.filter((task) => task.id !== id);
+    this.setState({
+      ...this.state,
       tasks,
     });
   };
   render() {
-    console.log(this.state.inputValue);
     return (
       <div>
-        <h1>ToDo</h1>
-        <AddTask onChange={this.onChange} submit={this.submit} />
-        <div>
+        <h1 style={{ textAlign: "center", color: "green" }}>ToDo Project</h1>
+        <AddTask
+          onChange={this.onChange}
+          submit={this.submit}
+          inputValue={this.state.inputValue}
+        />
+        <div className={Styles.TasksContainer}>
           {this.state.tasks.map((item, index) => {
-            return <Task name={item.name} />;
+            return (
+              <Task
+                key={index}
+                task={item}
+                handleDeleteTask={this.handleDeleteTask}
+              />
+            );
           })}
         </div>
       </div>
