@@ -3,10 +3,17 @@ import deleteIcon from "../../icons/delete.svg";
 import editIcon from "../../icons/edit.svg";
 
 const Task = (props) => {
-  const { handleDeleteTask, task } = props;
+  const { handleDeleteTask, task, handleOnChange, checkedTasks } = props;
   return (
     <div className={Styles.task}>
-      <p>{task.name}</p>
+      <div>
+        <input
+          type="checkbox"
+          onChange={() => handleOnChange(task.id)}
+          checked={checkedTasks.has(task.id)}
+        />
+        <p>{task.name}</p>
+      </div>
       <div className={Styles.iconsContainer}>
         <button onClick={() => handleDeleteTask(task.id)}>
           <img src={deleteIcon} alt="delete" />

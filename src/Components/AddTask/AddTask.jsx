@@ -1,10 +1,10 @@
 import Styles from "./styles.module.css";
 
 const AddTask = (props) => {
-  const { inputValue, onChange, submit } = props;
+  const { inputValue, inputOnChange, submit } = props;
   return (
     <div className={Styles.addTask}>
-      <input type="text" onChange={onChange} value={inputValue} />
+      <input type="text" onChange={inputOnChange} value={inputValue} />
       <button onClick={submit}>Add Task</button>
     </div>
   );
