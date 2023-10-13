@@ -70,7 +70,21 @@ class ToDo extends React.Component {
       checkedTasks: new Set(),
     });
   };
+  handleCheckAllTasks = () => {
+    let { tasks, checkedTasks } = this.state;
+    if (checkedTasks.size === tasks.length) {
+      checkedTasks.clear();
+    } else {
+      checkedTasks = tasks.map((item) => item.id);
+    }
+
+    this.setState({
+      ...this.state,
+      checkedTasks: new Set(checkedTasks),
+    });
+  };
   render() {
+    const { inputValue, tasks, checkedTasks } = this.state;
     console.log(this.state.checkedTasks);
     return (
       <div>
@@ -78,25 +92,33 @@ class ToDo extends React.Component {
         <AddTask
           inputOnChange={this.inputOnChange}
           submit={this.submit}
-          inputValue={this.state.inputValue}
+          inputValue={inputValue}
         />
         <div className={Styles.TasksContainer}>
-          {this.state.tasks.map((item, index) => {
+          {tasks.map((item, index) => {
             return (
               <Task
                 key={index}
                 task={item}
                 handleDeleteTask={this.handleDeleteTask}
                 handleOnChange={this.handleOnChange}
-                checkedTasks={this.state.checkedTasks}
+                checkedTasks={checkedTasks}
               />
             );
           })}
-          {this.state.tasks.length === 0 && <p>There are not tasks!</p>}
+          {tasks.length === 0 && <p>There are not tasks!</p>}
         </div>
-        {this.state.tasks.length === 0 || (
+        {tasks.length === 0 || (
           <div className={Styles.deleteAll}>
-            <button onClick={this.handleDeleteAllTasks}>Delete All</button>
+            <button onClick={this.handleDeleteAllTasks}>
+              Delete Cheked tasks
+            </button>
+            <button
+              onClick={this.handleCheckAllTasks}
+              style={{ background: "green" }}
+            >
+              {checkedTasks.size === tasks.length ? "Uncheck All" : "Check All"}
+            </button>
           </div>
         )}
       </div>

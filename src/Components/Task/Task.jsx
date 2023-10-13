@@ -15,10 +15,13 @@ const Task = (props) => {
         <p>{task.name}</p>
       </div>
       <div className={Styles.iconsContainer}>
-        <button onClick={() => handleDeleteTask(task.id)}>
+        <button
+          onClick={() => handleDeleteTask(task.id)}
+          disabled={checkedTasks.has(task.id)}
+        >
           <img src={deleteIcon} alt="delete" />
         </button>
-        <button>
+        <button disabled={checkedTasks.has(task.id)}>
           <img src={editIcon} alt="delete" />
         </button>
       </div>
