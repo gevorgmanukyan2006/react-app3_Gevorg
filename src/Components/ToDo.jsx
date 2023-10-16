@@ -3,34 +3,59 @@ import AddTask from "./AddTask/AddTask";
 import Task from "./Task/Task";
 import Styles from "./styles.module.css";
 import { idGeneretor } from "../helpers/idGeneretor";
+import Button from "react-bootstrap/Button";
 
 class ToDo extends React.Component {
   state = {
     tasks: [
-      { name: "Task1", id: idGeneretor() },
-      { name: "Task2", id: idGeneretor() },
-      { name: "Task3", id: idGeneretor() },
+      { title: "Task1", description: "description", id: idGeneretor() },
+      { title: "Task2", description: "description", id: idGeneretor() },
+      { title: "Task3", description: "description", id: idGeneretor() },
     ],
-    inputValue: "",
+    inputValue: {},
     checkedTasks: new Set(),
+    isOpenModal: false,
   };
 
   inputOnChange = (e) => {
+    const name = e.target.name;
     const value = e.target.value;
     this.setState({
-      inputValue: value,
+      ...this.state,
+      inputValue: {
+        ...this.state.inputValue,
+        [name]: value,
+      },
     });
   };
 
   submit = () => {
-    if (this.state.inputValue === "") return;
+    const { inputValue } = this.state;
+    // console.log(inputValue, "inputValue");
+
+    // if (inputValue.value === "") return;
     const tasks = this.state.tasks;
-    tasks.push({ name: this.state.inputValue, id: idGeneretor() });
-    // this.state.tasks = tasks;  sxal tarberak
+
+    const obj = {};
+
+    const isEmpty = Object.keys(inputValue).some((name) => {
+      console.log(inputValue[name]);
+      if (inputValue[name] === "") return false;
+      console.log(name, "name");
+      obj[name] = inputValue[name];
+      obj.id = idGeneretor();
+      return true;
+    });
+
+    if (!isEmpty) return;
+    console.log(isEmpty);
+    tasks.push(obj);
+
     this.setState({
       ...this.state,
-      inputValue: "",
+      inputValue: {},
       tasks,
+      isOpenModal: false,
     });
   };
 
@@ -83,16 +108,38 @@ class ToDo extends React.Component {
       checkedTasks: new Set(checkedTasks),
     });
   };
+
+  handleOpenModal = () => {
+    this.setState({
+      ...this.state,
+      isOpenModal: true,
+    });
+  };
+  onHide = () => {
+    this.setState({
+      ...this.state,
+      isOpenModal: false,
+    });
+  };
   render() {
     const { inputValue, tasks, checkedTasks } = this.state;
-    console.log(this.state.checkedTasks);
+    console.log(this.state.inputValue);
     return (
       <div>
-        <h1 style={{ textAlign: "center", color: "green" }}>ToDo Project</h1>
+        <h1
+          style={{ textAlign: "center", color: "green", marginBottom: "50px" }}
+        >
+          ToDo Project
+        </h1>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Button onClick={this.handleOpenModal}>Add Task</Button>
+        </div>
         <AddTask
+          onHide={this.onHide}
           inputOnChange={this.inputOnChange}
           submit={this.submit}
           inputValue={inputValue}
+          isOpenModal={this.state.isOpenModal}
         />
         <div className={Styles.TasksContainer}>
           {tasks.map((item, index) => {

@@ -12,7 +12,8 @@ const Task = (props) => {
           onChange={() => handleOnChange(task.id)}
           checked={checkedTasks.has(task.id)}
         />
-        <p>{task.name}</p>
+        <p>Title: {task.title}</p>
+        <p>Description: {task.description}</p>
       </div>
       <div className={Styles.iconsContainer}>
         <button
