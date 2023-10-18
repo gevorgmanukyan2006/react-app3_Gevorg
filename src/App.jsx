@@ -7,7 +7,7 @@ class App extends React.Component {
     const containerStyles = { width: "90%", margin: "auto" };
     return (
       <div style={containerStyles}>
-        <ToDo count="5" urishCount="10" />
+        <ToDo />
         {/* <Lifecycle /> */}
       </div>
     );

@@ -1,6 +1,7 @@
 import React from "react";
 import AddTask from "./AddTask/AddTask";
 import Task from "./Task/Task";
+import DeleteModal from "./deleteModal/deleteModal";
 import Styles from "./styles.module.css";
 import { idGeneretor } from "../helpers/idGeneretor";
 import Button from "react-bootstrap/Button";
@@ -14,48 +15,54 @@ class ToDo extends React.Component {
     ],
     inputValue: {},
     checkedTasks: new Set(),
-    isOpenModal: false,
+    isOpenAddModal: false,
+    isOpenDeleteModal: false,
   };
 
   inputOnChange = (e) => {
+    const { inputValue } = this.state;
     const name = e.target.name;
     const value = e.target.value;
-    this.setState({
-      ...this.state,
-      inputValue: {
-        ...this.state.inputValue,
-        [name]: value,
-      },
-    });
+    if (!value) {
+      delete inputValue[name];
+      this.setState({
+        ...this.state,
+        inputValue,
+      });
+    } else {
+      this.setState({
+        ...this.state,
+        inputValue: {
+          ...this.state.inputValue,
+          [name]: value,
+        },
+      });
+    }
   };
 
   submit = () => {
     const { inputValue } = this.state;
-    // console.log(inputValue, "inputValue");
-
-    // if (inputValue.value === "") return;
+    if (Object.keys(inputValue).length !== 2) return;
     const tasks = this.state.tasks;
 
     const obj = {};
-
-    const isEmpty = Object.keys(inputValue).some((name) => {
+    Object.keys(inputValue).forEach((name) => {
       console.log(inputValue[name]);
-      if (inputValue[name] === "") return false;
-      console.log(name, "name");
       obj[name] = inputValue[name];
       obj.id = idGeneretor();
-      return true;
     });
 
-    if (!isEmpty) return;
-    console.log(isEmpty);
+    // const isTitleDescription = Object.keys(obj).find(   Eroi hamar
+    //   (i) => i === "title" || i === "description"
+    // );
+    if (!obj.title && !obj.description) return;
     tasks.push(obj);
 
     this.setState({
       ...this.state,
       inputValue: {},
       tasks,
-      isOpenModal: false,
+      isOpenAddModal: false,
     });
   };
 
@@ -93,6 +100,7 @@ class ToDo extends React.Component {
       ...this.state,
       tasks,
       checkedTasks: new Set(),
+      isOpenDeleteModal: false,
     });
   };
   handleCheckAllTasks = () => {
@@ -109,21 +117,21 @@ class ToDo extends React.Component {
     });
   };
 
-  handleOpenModal = () => {
+  handleOpenModal = (modalName) => {
     this.setState({
       ...this.state,
-      isOpenModal: true,
+      [modalName]: true,
     });
   };
-  onHide = () => {
+  onHide = (modalName) => {
     this.setState({
       ...this.state,
-      isOpenModal: false,
+      [modalName]: false,
     });
   };
   render() {
-    const { inputValue, tasks, checkedTasks } = this.state;
-    console.log(this.state.inputValue);
+    const { inputValue, tasks, checkedTasks, isOpenDeleteModal } = this.state;
+    console.log(inputValue);
     return (
       <div>
         <h1
@@ -132,14 +140,21 @@ class ToDo extends React.Component {
           ToDo Project
         </h1>
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button onClick={this.handleOpenModal}>Add Task</Button>
+          <Button onClick={() => this.handleOpenModal("isOpenAddModal")}>
+            Add Task
+          </Button>
         </div>
         <AddTask
           onHide={this.onHide}
           inputOnChange={this.inputOnChange}
           submit={this.submit}
           inputValue={inputValue}
-          isOpenModal={this.state.isOpenModal}
+          isOpenAddModal={this.state.isOpenAddModal}
+        />
+        <DeleteModal
+          isOpenDeleteModal={isOpenDeleteModal}
+          onHide={this.onHide}
+          handleDeleteAllTasks={this.handleDeleteAllTasks}
         />
         <div className={Styles.TasksContainer}>
           {tasks.map((item, index) => {
@@ -157,7 +172,10 @@ class ToDo extends React.Component {
         </div>
         {tasks.length === 0 || (
           <div className={Styles.deleteAll}>
-            <button onClick={this.handleDeleteAllTasks}>
+            <button
+              onClick={() => this.handleOpenModal("isOpenDeleteModal")}
+              disabled={checkedTasks.size === 0}
+            >
               Delete Cheked tasks
             </button>
             <button
