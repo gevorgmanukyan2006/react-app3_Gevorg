@@ -17,6 +17,7 @@ class ToDo extends React.Component {
     checkedTasks: new Set(),
     isOpenAddModal: false,
     isOpenDeleteModal: false,
+    editTask: {},
   };
 
   inputOnChange = (e) => {
@@ -40,38 +41,56 @@ class ToDo extends React.Component {
     }
   };
 
-  submit = () => {
-    const { inputValue } = this.state;
-    if (Object.keys(inputValue).length !== 2) return;
-    const tasks = this.state.tasks;
+  submit = (editTask) => {
+    if (editTask) {
+      const { tasks } = this.state;
+      tasks.forEach((task) => {
+        if (task.id === editTask.id) {
+          task.title = editTask.title;
+          task.description = editTask.description;
+        }
+      });
+      this.setState({
+        ...this.state,
+        tasks,
+        isOpenAddModal: false
+      });
+    } else {
+      const { inputValue } = this.state;
+      if (Object.keys(inputValue).length !== 2) return;
+      const tasks = this.state.tasks;
 
-    const obj = {};
-    Object.keys(inputValue).forEach((name) => {
-      console.log(inputValue[name]);
-      obj[name] = inputValue[name];
-      obj.id = idGeneretor();
-    });
+      const obj = {};
+      Object.keys(inputValue).forEach((name) => {
+        console.log(inputValue[name]);
+        obj[name] = inputValue[name];
+        obj.id = idGeneretor();
+      });
 
-    // const isTitleDescription = Object.keys(obj).find(   Eroi hamar
-    //   (i) => i === "title" || i === "description"
-    // );
-    if (!obj.title && !obj.description) return;
-    tasks.push(obj);
+      // const isTitleDescription = Object.keys(obj).find(   Eroi hamar
+      //   (i) => i === "title" || i === "description"
+      // );
+      if (!obj.title && !obj.description) return;
+      tasks.push(obj);
 
-    this.setState({
-      ...this.state,
-      inputValue: {},
-      tasks,
-      isOpenAddModal: false,
-    });
+      this.setState({
+        ...this.state,
+        inputValue: {},
+        tasks,
+        isOpenAddModal: false,
+      });
+    }
   };
 
   handleDeleteTask = (id) => {
-    let tasks = this.state.tasks;
-    tasks = tasks.filter((task) => task.id !== id);
+    // let tasks = this.state.tasks;
+    // tasks = tasks.filter((task) => task.id !== id);
+    const checkedTasks = new Set();
+    checkedTasks.add(id);
     this.setState({
       ...this.state,
-      tasks,
+      isOpenDeleteModal: true,
+      checkedTasks,
     });
   };
 
@@ -127,11 +146,27 @@ class ToDo extends React.Component {
     this.setState({
       ...this.state,
       [modalName]: false,
+      checkedTasks: new Set(),
+    });
+  };
+
+  handleEditTask = (task) => {
+    this.setState({
+      ...this.state,
+      isOpenAddModal: true,
+      editTask: task,
+    });
+  };
+
+  resetEditTask = () => {
+    this.setState({
+      ...this.state,
+      editTask: {},
     });
   };
   render() {
     const { inputValue, tasks, checkedTasks, isOpenDeleteModal } = this.state;
-    console.log(inputValue);
+    // console.log(inputValue);
     return (
       <div>
         <h1
@@ -144,17 +179,23 @@ class ToDo extends React.Component {
             Add Task
           </Button>
         </div>
-        <AddTask
-          onHide={this.onHide}
-          inputOnChange={this.inputOnChange}
-          submit={this.submit}
-          inputValue={inputValue}
-          isOpenAddModal={this.state.isOpenAddModal}
-        />
+        {this.state.isOpenAddModal && (
+          <AddTask
+            onHide={this.onHide}
+            inputOnChange={this.inputOnChange}
+            submit={this.submit}
+            inputValue={inputValue}
+            isOpenAddModal={this.state.isOpenAddModal}
+            editTask={this.state.editTask}
+            resetEditTask={this.resetEditTask}
+          />
+        )}
         <DeleteModal
           isOpenDeleteModal={isOpenDeleteModal}
           onHide={this.onHide}
           handleDeleteAllTasks={this.handleDeleteAllTasks}
+          checkedTasks={this.state.checkedTasks}
+          tasks={this.state.tasks}
         />
         <div className={Styles.TasksContainer}>
           {tasks.map((item, index) => {
@@ -165,6 +206,7 @@ class ToDo extends React.Component {
                 handleDeleteTask={this.handleDeleteTask}
                 handleOnChange={this.handleOnChange}
                 checkedTasks={checkedTasks}
+                handleEditTask={this.handleEditTask}
               />
             );
           })}
