@@ -1,5 +1,5 @@
 import Styles from "./styles.module.css";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
@@ -10,6 +10,7 @@ const AddTask = ({
   inputOnChange,
   onHide,
   submit,
+  resetEditTask,
 }) => {
   let [editTask, setEditTask] = useState({
     title: editableTask.title,
@@ -24,6 +25,7 @@ const AddTask = ({
     });
   };
 
+ 
   const isAddState = Object.keys(editableTask).length === 0;
   return (
     <Modal

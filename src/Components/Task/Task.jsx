@@ -1,6 +1,7 @@
 import Styles from "./styles.module.css";
 import deleteIcon from "../../icons/delete.svg";
 import editIcon from "../../icons/edit.svg";
+import { Link, Navigate } from "react-router-dom";
 
 const Task = (props) => {
   const {
@@ -18,8 +19,11 @@ const Task = (props) => {
           onChange={() => handleOnChange(task.id)}
           checked={checkedTasks.has(task.id)}
         />
-        <p>Title: {task.title}</p>
+        <Link to={`/singleTask/${task.id}`} state={task}>
+          <p>Title: {task.title}</p>
+        </Link>
         <p>Description: {task.description}</p>
+        <p>Date: {task.date}</p>
       </div>
       <div className={Styles.iconsContainer}>
         <button
