@@ -2,10 +2,6 @@ import React from "react";
 import A from "./A";
 
 class Lifecycle extends React.Component {
-  //   constructor() {
-  //     super();
-  //     console.log("constructor");
-  //   }
   state = {
     count: 0,
     bool: true,
@@ -20,8 +16,6 @@ class Lifecycle extends React.Component {
     );
   }
   componentDidMount() {
-    //   const h1 = document.getElementById("h1");
-    //   console.log(h1, "h11111");
     console.log("componentDidMount");
     setTimeout(() => {
       this.setState({ count: 1, bool: false });

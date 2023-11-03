@@ -1,8 +1,8 @@
 import React, { createContext, useState } from "react";
 import ToDo from "./Components/ToDo";
 import SingleTask from "./Components/singleTask/SingleTask";
-// import A from "./functionalComponents/A";
 import { Route, Routes } from "react-router-dom";
+import Form_func from "./Components/Form/Form";
 export const ContextProvider = createContext();
 
 const App = () => {
@@ -22,9 +22,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<ToDo />} />
           <Route path="/singleTask/:id" element={<SingleTask />} />
+          <Route path="/form" element={<Form_func />} />
         </Routes>
       </ContextProvider.Provider>
-      {/* <A /> */}
     </div>
   );
 };

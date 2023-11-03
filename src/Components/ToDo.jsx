@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 import AddTask from "./AddTask/AddTask";
 import Task from "./Task/Task";
 import DeleteModal from "./deleteModal/deleteModal";
@@ -6,16 +6,28 @@ import Styles from "./styles.module.css";
 import { idGeneretor } from "../helpers/idGeneretor";
 import Button from "react-bootstrap/Button";
 import { createTask } from "../service/requests";
-// import { ContextProvider } from "../App";
+import { Link } from "react-router-dom";
 
 const ToDo = () => {
-  // const { loading } = useContext(ContextProvider);
-  // console.log(num, "num");
-
   let [tasks, setTasks] = useState([
-    { title: "Task1", description: "description", date:"22/12/2023", id: idGeneretor() },
-    { title: "Task2", description: "description", date:"22/12/2023", id: idGeneretor() },
-    { title: "Task3", description: "description", date:"22/12/2023", id: idGeneretor() },
+    {
+      title: "Task1",
+      description: "description",
+      date: "2023-12-22",
+      id: idGeneretor(),
+    },
+    {
+      title: "Task2",
+      description: "description",
+      date: "2023-12-22",
+      id: idGeneretor(),
+    },
+    {
+      title: "Task3",
+      description: "description",
+      date: "2023-12-22",
+      id: idGeneretor(),
+    },
   ]);
   let [inputValue, setInputValue] = useState({});
   let [checkedTasks, setCheckedTasks] = useState(new Set());
@@ -26,6 +38,7 @@ const ToDo = () => {
   const inputOnChange = (e) => {
     const name = e.target.name;
     const value = e.target.value;
+
     if (!value) {
       delete inputValue[name];
       setInputValue(inputValue);
@@ -43,23 +56,20 @@ const ToDo = () => {
         if (task.id === editTask.id) {
           task.title = editTask.title;
           task.description = editTask.description;
+          task.date = editTask.date;
         }
       });
       setTasks(tasks);
       setIsOpenAddModal(false);
       setEditTask({});
     } else {
-      if (Object.keys(inputValue).length !== 2) return;
+      if (Object.keys(inputValue).length !== 3) return;
       const obj = {};
       Object.keys(inputValue).forEach((name) => {
-        console.log(inputValue[name]);
         obj[name] = inputValue[name];
         obj.id = idGeneretor();
       });
 
-      // const isTitleDescription = Object.keys(obj).find(   Eroi hamar
-      //   (i) => i === "title" || i === "description"
-      // );
       if (!obj.title && !obj.description) return;
       tasks.push(obj);
       createTask(obj);
@@ -70,8 +80,6 @@ const ToDo = () => {
   };
 
   const handleDeleteTask = (id) => {
-    // let tasks = this.state.tasks;
-    // tasks = tasks.filter((task) => task.id !== id);
     const checkedTasks = new Set();
     checkedTasks.add(id);
     setCheckedTasks(checkedTasks);
@@ -87,7 +95,6 @@ const ToDo = () => {
     setCheckedTasks(new Set(checkedTasks));
   };
   const handleDeleteAllTasks = () => {
-    // tasks = tasks.filter((task) => task.id !== checkedTasks.has(task.id));
     checkedTasks = Array.from(checkedTasks);
     tasks = checkedTasks.reduce(
       (acc, checkedTask) => acc.filter((task) => task.id !== checkedTask),
@@ -132,31 +139,6 @@ const ToDo = () => {
   const resetEditTask = () => {
     setEditTask({});
   };
-
-  // useEffect(() => {
-  //   const post = { title: "hello", userId: 1, body: "body" };
-  //   fetch("https://jsonplaceholder.typicode.com/users")
-  //     .then((res) => res.json())
-  //     .then((data) => console.log(data, "userData"));
-  //   fetch("https://jsonplaceholder.typicode.com/posts", {
-  //     method: "POST",
-  //     "content-type": "application-json",
-  //     body: JSON.stringify(post),
-  //   })
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log(data, "data");
-  //     });
-  // });
-
-  // useEffect(() => {
-  //   fetch("http://localhost:3001")
-  //     .then((res) => {
-  //       console.log(res, "res");
-  //       return res.text();
-  //     })
-  //     .then((data) => console.log(data, "data"));
-  // }, []);
 
   return (
     <div>
@@ -212,7 +194,9 @@ const ToDo = () => {
           <button onClick={handleCheckAllTasks} style={{ background: "green" }}>
             {checkedTasks.size === tasks.length ? "Uncheck All" : "Check All"}
           </button>
-          {/* <button onClick={() => setNum(num + 1)}>for context</button> */}
+          <Link to={"/form"}>
+            <button style={{ background: "#F4CA16" }}>Contact</button>
+          </Link>
         </div>
       )}
     </div>

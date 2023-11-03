@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import B from "./B";
 
 const A = () => {
-  //   console.log("Component A");
   const [count, setCount] = useState(0);
   const [count1, setCount1] = useState(0);
   const handleCount = () => {
@@ -14,7 +13,6 @@ const A = () => {
     setCount1(temp);
   };
 
-  
   return (
     <div>
       <h1>Functional components</h1>
